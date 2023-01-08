@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "data": "node app.js",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
