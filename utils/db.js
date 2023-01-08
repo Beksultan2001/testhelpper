@@ -5,16 +5,16 @@ const url = 'mongodb+srv://Beksultan:oC4IwyMLujIyECUA@cluster0.nnynldx.mongodb.n
 
 let client = null;
 
-// MongoClient.connect(url,(error,_client) => {
-//     if (error){
-//         console.log(error);
-//         return;
-//     }; 
-//     client = _client;
+MongoClient.connect(url,(error,_client) => {
+    if (error){
+        console.log(error);
+        return;
+    }; 
+    client = _client;
+    console.log(_client,'client')
+    // const db =  client.db('test');
 
-//     // const db =  client.db('test');
-
-// });
+});
 
 
 // const db =  client.db('test');
