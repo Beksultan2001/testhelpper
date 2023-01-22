@@ -1,76 +1,44 @@
-import mongodb from 'mongodb';
-// oC4IwyMLujIyECUA
-export const MongoClient = mongodb.MongoClient;
-const url = 'mongodb+srv://Beksultan:oC4IwyMLujIyECUA@cluster0.nnynldx.mongodb.net/?retryWrites=true&w=majority';
+import mongoose from 'mongoose';
+import { generateID } from './utils.js';
 
-let client = null;
+const log = console.log;
 
-MongoClient.connect(url,(error,_client) => {
-    if (error){
-        console.log(error);
-        return;
-    }; 
-    client = _client;
-    console.log(_client,'client')
-    // const db =  client.db('test');
-
+const wordSchema = new mongoose.Schema({
+    newId: String,
+    word: String
 });
 
+export const EngWords = mongoose.model('engwords', wordSchema);
+export const RusWords = mongoose.model('ruswords', wordSchema);
 
-// const db =  client.db('test');
+export async function insertWords(word1,word2,ctx){
+    
+    var newId = generateID();
+    
+    let eng = await EngWords.create({newId: newId, word: word1});
+    let rus = await RusWords.create({newId: newId, word: word2});
 
-// db.collection('users').insertOne({
-//     name: 'John',
-//     age: 21
-// })
-//     // db.collection('users').insertOne({
-//     //     name: 'John',
-//     //     age: 21
-//     // })
-//     // .then(res => {
-//     //     console.log(res,'res')
-//     // })
-//     // .catch(e => console.log(e));
+    ctx.reply('Accepted');
+};
 
-//     // db.collection('users').insertMany([
-//     //     {
-//     //         name: 'Test1',
-//     //         age: '27'
-//     //     },
-//     //     {
-//     //         name: 'Test2',
-//     //         age: '28'
-//     //     }
-//     // ])
-//     // .then(res => console.log(res))
-//     // .catch(e => console.log(e))
+export async function deleteWord(word,ctx){
 
-//     // db.collection('users').findOne({age: '27'})
-//     // .then(res => console.log(res,'res'))
-//     // .catch(e => console.log(e,'e'))
+    let engWords = await EngWords.find({word: word});
+    // let rusRes = await RusWords.deleteMany({word: word});
 
-//     // db.collection('users').find({hyst: 'sf'}).toArray()
-//     // .then(res => console.log(res))
-//     // .catch(e => console.log(e,'e'))
+    if (engWords.length >= 1){
+        log(engWords[0]);
+    }else {
+        ctx.reply('There is no such word');
+        return;
+    };
 
-//     // db.collection('users').updateOne({age: 21},{
-//     //     $set: {
-//     //         age: 85
-//     //     }
-//     // })
-//     // .then((res) => console.log(res,'res'))
-//     // .catch((e) => console.log(e,'e'));
+    for(let {newId} of engWords){
+        let res1 = await EngWords.deleteMany({newId: newId});
+        let res2 = await RusWords.deleteMany({newId: newId});
+    };
 
-//     // db.collection('users').updateMany({age: 21},{
-//     //     $inc: {
-//     //         age: 10
-//     //     }
-//     // })
-//     // .then((res) => console.log(res,'res'))
-//     // .catch((e) => console.log(e,'e'));
+    ctx.reply('Successfully deleted');
 
-//     // db.collection('users').deleteMany({})
-//     // .then((res) => console.log(res,'res'))
-//     // .catch((e) => console.log(e,'e'));
-// });
+};
 
