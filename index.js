@@ -55,6 +55,10 @@ class BOT{
                 mongo.deleteWord(ctx.message.text,ctx);
                 break;
             };
+            case '/search' : {
+                mongo.searchWord(ctx.message.text,ctx);
+                break;
+            };
         };
 
     }
@@ -77,10 +81,10 @@ class BOT{
             let last = oThis.lastCommand;
             switch(last){
                 case '/insert':
-                    ctx.reply('Write Words');
+                    ctx.reply('write words');
                     break;
                 case '/delete':
-                    ctx.reply('Write a word that You wanna delete');
+                    ctx.reply('write a word to delete');
                     break;
                 case '/listwords':
                     let arr = await mongo.EngWords.find({});
@@ -88,14 +92,41 @@ class BOT{
                     for(let {newId,word} of arr){
                         obj[newId] = word;
                     };
-    
                     let rusWords = await mongo.RusWords.find({});
                     let listWords = rusWords.map((t) => {
                         return `${obj[t.newId]} - ${t.word}`;
                     });
-                    listWords = mixArray(listWords);
                     ctx.replyWithHTML(listWords.join('\n'));
                     break;
+                case '/search': {
+                    ctx.reply('Write word to search');
+                    break;
+                }
+                case '/lastwords': {
+                    let today = new Date();
+                    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+                    let arr = await mongo.EngWords.find({created: {
+                        $gte: yesterday,
+                        $lt: today
+                    }});
+                    let obj = {};
+                    for(let {newId,word} of arr){
+                        obj[newId] = word;
+                    };
+                    let rusWords = await mongo.RusWords.find({created: {
+                        $gte: yesterday,
+                        $lt: today
+                    }});
+                    let listWords = rusWords.map((t) => {
+                        return `${obj[t.newId]} - ${t.word}`;
+                    });
+                    if (!listWords.length){
+                        ctx.reply('there is no words');
+                        return;
+                    }
+                    ctx.replyWithHTML(listWords.join('\n'));
+                    break;
+                }
                 case '/random':
                     mongo.randomWord(ctx);
                     break;
@@ -121,7 +152,7 @@ class BOT{
                 if (list[1] == 'true'){                    
                     ctx.replyWithHTML('<b>True</b>' + '\n' + text + ' - ' + list[2]);
                 }else {
-                    ctx.replyWithHTML('<b>False</b>');
+                    ctx.replyWithHTML('<b>Wrong option</b> : ' + list[2]);
                 }
             };
         });
