@@ -22,9 +22,6 @@ const bot2 = new TelegramBot({token: process.env.BOT_TOKEN,polling: true});
 bot.start((ctx) => {
     ctx.reply(`Hello ${ctx.message.from.first_name}`);
 });
-
-
-
 class BOT{
     constructor(){
         this.lastCommand = null;
@@ -96,7 +93,10 @@ class BOT{
                     let listWords = rusWords.map((t) => {
                         return `${obj[t.newId]} - ${t.word}`;
                     });
-                    ctx.replyWithHTML(listWords.join('\n'));
+                    for(let i = 0; i<listWords.length; i+=25){
+                        let sliceList = listWords.slice(i,i+25);
+                        await ctx.replyWithHTML(sliceList.join('\n'));
+                    }
                     break;
                 case '/search': {
                     ctx.reply('Write word to search');
