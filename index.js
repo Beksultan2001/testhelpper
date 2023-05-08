@@ -151,7 +151,9 @@ class BOT{
 
                 if (list[1] == 'true'){                    
                     ctx.replyWithHTML('<b>True</b>' + '\n' + text + ' - ' + list[2]);
-                    mongo.randomWord(ctx);
+                    setTimeout(() => {
+                        mongo.randomWord(ctx); // Wrap the call inside a setTimeout function
+                    }, 100);
                 }else {
                     ctx.replyWithHTML('<b>Wrong option</b> : ' + list[2]);
                 }
