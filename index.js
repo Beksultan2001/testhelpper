@@ -9,7 +9,7 @@ import {isRussian,mixArray} from './utils/utils.js';
 
 const log = console.log;
 
-const PORT = 5000;
+const PORT = 5001;
 const URL = 'mongodb+srv://Beksultan:oC4IwyMLujIyECUA@cluster0.nnynldx.mongodb.net/test?retryWrites=true&w=majority';
 
 const app = express();
@@ -151,6 +151,7 @@ class BOT{
 
                 if (list[1] == 'true'){                    
                     ctx.replyWithHTML('<b>True</b>' + '\n' + text + ' - ' + list[2]);
+                    mongo.randomWord(ctx);
                 }else {
                     ctx.replyWithHTML('<b>Wrong option</b> : ' + list[2]);
                 }
